@@ -20,10 +20,15 @@ app.get("/db-check", async (req, res) => {
 app.get("/games/search", async (req, res) => {
   const { title } = req.query;
   if (typeof title !== "string" || title.trim() === "") {
-    return res.status(400).json({ error: "informe o título do jogo" });
+    return res.status(400).json({ error: "Informe o título do jogo" })
   }
-  const games = await searchGames(title);
-  res.json(games);
+  try {
+    const games = await searchGames(title);
+    res.json(games);
+  } catch (error) {
+    console.error(error);
+    return res.status(502).json({ error: "Não foi possível buscar o jogo agora"})
+  }
 });
 
 const PORT = process.env.PORT || 3333;
